@@ -17,8 +17,8 @@
                 Console.WriteLine("|" + Pos[3] + "|" + Pos[4] + "|" + Pos[5] + "|");
                 Console.WriteLine("|" + Pos[6] + "|" + Pos[7] + "|" + Pos[8] + "|");
                 Console.WriteLine("-------");
-                int[] movesX = new int[9];
-                int[] movesO = new int[9];
+                //int[] movesX = new int[9];
+                //int[] movesO = new int[9];
                 int step;
                 for (int i = 1; i <= Pos.Length;)
                 {
@@ -31,7 +31,7 @@
                             if (numValue > 0 & numValue < 10)
                             { if (Pos[step] != "X" & Pos[step] != "O")
                                 {
-                                    movesX[step] = step + 1;
+                                    //movesX[step] = step + 1;
                                     Pos[step] = "X";
                                     //Console.WriteLine("[{0}]", string.Join(", ", movesX)); // Проверка что содержится в массиве ходов игрока Х
                                     Console.WriteLine("-------");
@@ -116,7 +116,7 @@
                             {
                                 if (Pos[step] != "X" & Pos[step] != "O")
                                 {
-                                    movesO[step] = step + 1;
+                                    //movesO[step] = step + 1;
                                     Pos[step] = "O";
                                     //Console.WriteLine("[{0}]", string.Join(", ", movesO)); // Проверка что содержится в массиве ходов игрока O
                                     Console.WriteLine("-------");
@@ -194,7 +194,8 @@
                         }
                     }
                 }
-                                
+
+                Console.WriteLine("Ничья!Победила дружба.");
             }
             else {
                 Console.WriteLine("Отказ от игры!"); 
