@@ -78,6 +78,18 @@
                                     }
                                     Console.WriteLine();
                                     Console.WriteLine("-------");
+                                    if (i>4 &
+                                        Pos[0] == "X" & Pos[1] == "X" & Pos[2] == "X" |
+                                        Pos[3] == "X" & Pos[4] == "X" & Pos[5] == "X" |
+                                        Pos[6] == "X" & Pos[7] == "X" & Pos[8] == "X" |
+                                        Pos[0] == "X" & Pos[3] == "X" & Pos[6] == "X" |
+                                        Pos[1] == "X" & Pos[4] == "X" & Pos[7] == "X" |
+                                        Pos[2] == "X" & Pos[5] == "X" & Pos[8] == "X" |
+                                        Pos[0] == "X" & Pos[4] == "X" & Pos[8] == "X" |
+                                        Pos[2] == "X" & Pos[4] == "X" & Pos[6] == "X" )
+                                    { Console.WriteLine("Победа игрока Х. Игра окончена");
+                    return;
+                }
                                     i++;
                                 }
                                 else
@@ -151,6 +163,19 @@
                                     }
                                     Console.WriteLine();
                                     Console.WriteLine("-------");
+                                    if (i > 4 &
+                                       Pos[0] == "O" & Pos[1] == "O" & Pos[2] == "O" |
+                                       Pos[3] == "O" & Pos[4] == "O" & Pos[5] == "O" |
+                                       Pos[6] == "O" & Pos[7] == "O" & Pos[8] == "O" |
+                                       Pos[0] == "O" & Pos[3] == "O" & Pos[6] == "O" |
+                                       Pos[1] == "O" & Pos[4] == "O" & Pos[7] == "O" |
+                                       Pos[2] == "O" & Pos[5] == "O" & Pos[8] == "O" |
+                                       Pos[0] == "O" & Pos[4] == "O" & Pos[8] == "O" |
+                                       Pos[2] == "O" & Pos[4] == "O" & Pos[6] == "O")
+                                    {
+                                        Console.WriteLine("Победа игрока O. Игра окончена");
+                                        return;
+                                    }
                                     i++;
                                 }
                                 else
