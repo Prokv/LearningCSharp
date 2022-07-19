@@ -10,198 +10,122 @@
             Console.WriteLine();
             if (input.Key == ConsoleKey.Y) 
             {
-                Console.WriteLine("Игра начата. Начинает игрок Х, выбирая позицию на стартовом поле"); 
-                string[] Pos = new string[] {"1","2","3","4","5","6","7","8","9"};
-                Console.WriteLine("-------");
-                Console.WriteLine("|" + Pos[0] + "|" + Pos[1] + "|" + Pos[2] + "|");
-                Console.WriteLine("|" + Pos[3] + "|" + Pos[4] + "|" + Pos[5] + "|");
-                Console.WriteLine("|" + Pos[6] + "|" + Pos[7] + "|" + Pos[8] + "|");
-                Console.WriteLine("-------");
-                //int[] movesX = new int[9];
-                //int[] movesO = new int[9];
-                int step;
+                string[] Pos = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+                string name;
+
+                Console.WriteLine("Игра начата. Начинает игрок Х, выбирая позицию на стартовом поле");
+                GameField(Pos);
                 for (int i = 1; i <= Pos.Length;)
                 {
                     if (i % 2 > 0)
                     {
-                        Console.Write("Ход игрока Х: ");
-                        if (int.TryParse(Console.ReadLine(), out int numValue))
-                        {
-                            step = numValue - 1;
-                            if (numValue > 0 & numValue < 10)
-                            { if (Pos[step] != "X" & Pos[step] != "O")
-                                {
-                                    //movesX[step] = step + 1;
-                                    Pos[step] = "X";
-                                    //Console.WriteLine("[{0}]", string.Join(", ", movesX)); // Проверка что содержится в массиве ходов игрока Х
-                                    Console.WriteLine("-------");
-                                    Console.Write("|");
-                                    for (int j = 0; j < 3; j++)
-                                    {
-                                        if (Pos[j] == "X")
-                                        { Console.ForegroundColor = ConsoleColor.Red; }
-                                        else
-                                            if (Pos[j] == "O")
-                                        { Console.ForegroundColor = ConsoleColor.Green; }
-                                        else Console.ForegroundColor = ConsoleColor.Gray;
-                                        Console.Write(Pos[j]);
-                                        Console.ForegroundColor = ConsoleColor.Gray;
-                                        Console.Write("|");
-                                    }
-                                    Console.WriteLine();
-                                    Console.Write("|");
-                                    for (int j = 3; j < 6; j++)
-                                    {
-                                        if (Pos[j] == "X")
-                                        { Console.ForegroundColor = ConsoleColor.Red; }
-                                        else
-                                        if (Pos[j] == "O")
-                                        { Console.ForegroundColor = ConsoleColor.Green; }
-                                        else Console.ForegroundColor = ConsoleColor.Gray;
-                                        Console.Write(Pos[j]);
-                                        Console.ForegroundColor = ConsoleColor.Gray;
-                                        Console.Write("|");
-                                    }
-                                    Console.WriteLine();
-                                    Console.Write("|");
-                                    for (int j = 6; j < 9; j++)
-                                    {
-                                        if (Pos[j] == "X")
-                                        { Console.ForegroundColor = ConsoleColor.Red; }
-                                        else
-                                        if (Pos[j] == "O")
-                                        { Console.ForegroundColor = ConsoleColor.Green; }
-                                        else Console.ForegroundColor = ConsoleColor.Gray;
-                                        Console.Write(Pos[j]);
-                                        Console.ForegroundColor = ConsoleColor.Gray;
-                                        Console.Write("|");
-                                    }
-                                    Console.WriteLine();
-                                    Console.WriteLine("-------");
-                                    if (i>4 &
-                                        Pos[0] == "X" & Pos[1] == "X" & Pos[2] == "X" |
-                                        Pos[3] == "X" & Pos[4] == "X" & Pos[5] == "X" |
-                                        Pos[6] == "X" & Pos[7] == "X" & Pos[8] == "X" |
-                                        Pos[0] == "X" & Pos[3] == "X" & Pos[6] == "X" |
-                                        Pos[1] == "X" & Pos[4] == "X" & Pos[7] == "X" |
-                                        Pos[2] == "X" & Pos[5] == "X" & Pos[8] == "X" |
-                                        Pos[0] == "X" & Pos[4] == "X" & Pos[8] == "X" |
-                                        Pos[2] == "X" & Pos[4] == "X" & Pos[6] == "X" )
-                                    { Console.WriteLine("Победа игрока Х. Игра окончена");
-                    return;
-                }
-                                    i++;
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Ход игрока Х: Поле занято, ход невозможен!");
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine("Ход игрока Х: Ход невозможен");
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("Некорректный ввод");
-                        }
+                        name = "X";
+                        i= StepCheck(name, Pos, i);
                     }
                     else {
-                        Console.Write("Ход игрока O: ");
-                        if (int.TryParse(Console.ReadLine(), out int numValue))
-                        {
-                            step = numValue - 1;
-                            if (numValue > 0 & numValue < 10)
-                            {
-                                if (Pos[step] != "X" & Pos[step] != "O")
-                                {
-                                    //movesO[step] = step + 1;
-                                    Pos[step] = "O";
-                                    //Console.WriteLine("[{0}]", string.Join(", ", movesO)); // Проверка что содержится в массиве ходов игрока O
-                                    Console.WriteLine("-------");
-                                    Console.Write("|");
-                                    for (int j = 0; j < 3; j++)
-                                    {
-                                        if (Pos[j] == "O")
-                                        { Console.ForegroundColor = ConsoleColor.Green; }
-                                        else
-                                            if (Pos[j] == "X")
-                                        { Console.ForegroundColor = ConsoleColor.Red; }
-                                        else Console.ForegroundColor = ConsoleColor.Gray;
-                                        Console.Write(Pos[j]);
-                                        Console.ForegroundColor = ConsoleColor.Gray;
-                                        Console.Write("|");
-                                    }
-                                    Console.WriteLine();
-                                    Console.Write("|");
-                                    for (int j = 3; j < 6; j++)
-                                    {
-                                        if (Pos[j] == "O")
-                                        { Console.ForegroundColor = ConsoleColor.Green; }
-                                        else
-                                            if (Pos[j] == "X")
-                                        { Console.ForegroundColor = ConsoleColor.Red; }
-                                        else Console.ForegroundColor = ConsoleColor.Gray;
-                                        Console.Write(Pos[j]);
-                                        Console.ForegroundColor = ConsoleColor.Gray;
-                                        Console.Write("|");
-                                    }
-                                    Console.WriteLine();
-                                    Console.Write("|");
-                                    for (int j = 6; j < 9; j++)
-                                    {
-                                        if (Pos[j] == "O")
-                                        { Console.ForegroundColor = ConsoleColor.Green; }
-                                        else
-                                            if (Pos[j] == "X")
-                                        { Console.ForegroundColor = ConsoleColor.Red; }
-                                        else Console.ForegroundColor = ConsoleColor.Gray;
-                                        Console.Write(Pos[j]);
-                                        Console.ForegroundColor = ConsoleColor.Gray;
-                                        Console.Write("|");
-                                    }
-                                    Console.WriteLine();
-                                    Console.WriteLine("-------");
-                                    if (i > 4 &
-                                       Pos[0] == "O" & Pos[1] == "O" & Pos[2] == "O" |
-                                       Pos[3] == "O" & Pos[4] == "O" & Pos[5] == "O" |
-                                       Pos[6] == "O" & Pos[7] == "O" & Pos[8] == "O" |
-                                       Pos[0] == "O" & Pos[3] == "O" & Pos[6] == "O" |
-                                       Pos[1] == "O" & Pos[4] == "O" & Pos[7] == "O" |
-                                       Pos[2] == "O" & Pos[5] == "O" & Pos[8] == "O" |
-                                       Pos[0] == "O" & Pos[4] == "O" & Pos[8] == "O" |
-                                       Pos[2] == "O" & Pos[4] == "O" & Pos[6] == "O")
-                                    {
-                                        Console.WriteLine("Победа игрока O. Игра окончена");
-                                        return;
-                                    }
-                                    i++;
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Ход игрока O: Поле занято, ход невозможен!");
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine("Ход игрока O: Ход невозможен");
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("Некорректный ввод");
-                        }
+                        name = "O";
+                        i= StepCheck(name, Pos, i);
+                    }
+                    if (i == Pos.Length+1)
+                    {
+                        Console.WriteLine("Ничья!Победила дружба.");
                     }
                 }
-
-                Console.WriteLine("Ничья!Победила дружба.");
             }
             else {
-                Console.WriteLine("Отказ от игры!"); 
-                return; }
-
+                Console.WriteLine("Отказ от игры!");  
+                  }
         }
+        public static int StepCheck (string name, string[] Pos, int i ) //Проверка правильности хода
+        {
+            int step;
+            Console.Write("Ход игрока "+name+":");
+            if (int.TryParse(Console.ReadLine(), out int numValue))
+            {
+                step = numValue - 1;
+                if (numValue > 0 & numValue <= Pos.Length)
+                {
+                    if (Pos[step] != "X" & Pos[step] != "O")
+                    {
+                        Pos[step] = name;
+                        GameField(Pos);
+                        if (i > 4)
+                        {
+                            i = WinCheck(name, Pos, i); //Проверка на выигрыш
+                        }
+                        else { i++; }
+                        return i;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Ход игрока "+ name+": Поле занято, ход невозможен!");
+                        return i;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Ход игрока "+ name+": Ход невозможен");
+                    return i;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Некорректный ввод");
+                return i;
+            }
+        }
+    
+        public static void GameField(string [] Pos) // Отрисовка полей игры
+        {
+            int min=0;
+            int max=3;
+            
+            Console.WriteLine("-------");
+            for (int i = 0; i < 3; i++)
+            {
+                Cell_Color(Pos, min, max);
+                Console.WriteLine();
+                min = max;
+                max = max + 3;
+            }
+            Console.WriteLine("-------");
+        }
+        public static void Cell_Color(string[] Pos, int min, int max) //Раскраска полей цветом
+        {
+            Console.Write("|");
+            for (int j=min; j < max; j++)
+            {
+                if (Pos[j] == "X")
+                { Console.ForegroundColor = ConsoleColor.Red; }
+                else
+                    if (Pos[j] == "O")
+                { Console.ForegroundColor = ConsoleColor.Green; }
+                else Console.ForegroundColor = ConsoleColor.Gray;
+                Console.Write(Pos[j]);
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.Write("|");
+            }
+        }
+        public static int WinCheck(string name, string[] Pos, int i) //Проверка выигрышной комбинации
+        {
+            int[] matrix = new int[] { 12, 345, 678, 36, 147, 258, 48, 246 }; //Массив с выигрышными комбинациями
+            for (int j = 0; j < matrix.Length; j++)
+            {
+                int n = matrix[j] / 100;
+                int m = matrix[j] % 100;
+                int n1 = m / 10;
+                int n2 = m % 10;
 
+                if (Pos[n] == "X" & Pos[n1] == "X" & Pos[n2] == "X"|
+                    Pos[n] == "O" & Pos[n1] == "O" & Pos[n2] == "O")
+                {
+                    Console.WriteLine("Победа игрока " + name + ". Игра окончена");
+                    i = Pos.Length + 2;
+                    return i;
+                }
+            }
+            i++;
+            return i;
+        }
     }
 }
