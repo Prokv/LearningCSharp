@@ -4,8 +4,8 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine($"NewLine: {Environment.NewLine}  Хотите сыграть в игру?" +
-                $"{Environment.NewLine}  [Нажмите Y если согласны или Любую клавишу если нет]");
+            Console.WriteLine($"Игра крестики-нолики."+ $"{Environment.NewLine}Хотите сыграть в игру?" +
+                $"{Environment.NewLine}[Нажмите Y если согласны или Любую клавишу если нет]");
             ConsoleKeyInfo input = Console.ReadKey();
             Console.WriteLine();
             if (input.Key == ConsoleKey.Y) 
@@ -47,6 +47,7 @@
                 {
                     if (Pos[step] != "X" & Pos[step] != "O")
                     {
+                        Console.Clear();
                         Pos[step] = name;
                         GameField(Pos);
                         if (i > 4)
@@ -108,21 +109,16 @@
         }
         public static int WinCheck(string name, string[] Pos, int i) //Проверка выигрышной комбинации
         {
-            int[] matrix = new int[] { 12, 345, 678, 36, 147, 258, 48, 246 }; //Массив с выигрышными комбинациями
-            for (int j = 0; j < matrix.Length; j++)
-            {
-                int n = matrix[j] / 100;
-                int m = matrix[j] % 100;
-                int n1 = m / 10;
-                int n2 = m % 10;
+            int[,] array = new int[8,3] { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 0, 3, 6 }, { 1, 4, 7 }, { 2, 5, 8 }, { 0, 4, 8 }, { 2, 4, 6 } }; //массив с выигрышными комбинациями
 
-                if (Pos[n] == "X" & Pos[n1] == "X" & Pos[n2] == "X"|
-                    Pos[n] == "O" & Pos[n1] == "O" & Pos[n2] == "O")
-                {
-                    Console.WriteLine("Победа игрока " + name + ". Игра окончена");
-                    i = Pos.Length + 2;
-                    return i;
-                }
+            for (int r = 0; r < 8; r++) //Перебор строк
+            {
+                if (Pos[array[r, 0]] == Pos[array[r, 1]] & Pos[array[r, 1]]== Pos[array[r, 2]])
+                    {
+                        Console.WriteLine("Победа игрока " + name + ". Игра окончена");
+                        i = Pos.Length + 2;
+                        return i;
+                    }
             }
             i++;
             return i;
