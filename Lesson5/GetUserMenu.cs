@@ -9,6 +9,8 @@ namespace Lesson5
     internal class GetUserMenu
     {
         SubscribersList SubscribersList = new SubscribersList();
+
+
         public GetUserMenu()
         {           
             SubscribersList.Clear();
@@ -61,8 +63,6 @@ namespace Lesson5
         public int UserMenu()
         {
             int choiceOfUser;
-            System.Threading.Thread.Sleep(1000);
-            Console.Clear();
             Console.WriteLine($"Выберите действия со справочником введя номер пункта меню: " +
        $"{Environment.NewLine} 1. Добавить нового пользователя." +
        $"{Environment.NewLine} 2. Поиск по номеру телефона." +
@@ -73,6 +73,7 @@ namespace Lesson5
             bool isNumber = int.TryParse(Console.ReadLine(), out choiceOfUser);
             if (isNumber)
             {
+                Console.Clear();
                 return choiceOfUser;
             }
             else return 0;
