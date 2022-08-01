@@ -3,45 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Text.RegularExpressions;
+
 
 namespace Lesson5
 {
     internal class Subscriber
-    {
-        private string name;
-        private string phoneNumber;
-
-        public string Name
         {
-            get { return name; }
-            set { name = value; }
-        }
-
-        public string PhoneNumber 
-        { 
-            get { return phoneNumber; } 
-            set { phoneNumber = value; }
-        }
-
+        /// <summary>
+        /// Имя абонента
+        /// </summary>
+        public string Name { get; set; }
+        /// <summary>
+        /// Номер телефона абонента
+        /// </summary>
+        public string PhoneNumber { get; set; }
 
         /// <summary>
-        /// Конструктор для создания абонента.
+        /// Конструктор класса Subscriber (абонент)
         /// </summary>
-        public Subscriber()
+        /// <param name="name">Имя абонента</param>
+        /// <param name="phoneNumber">Номер телефона абонента</param>
+        public Subscriber(string Name, string PhoneNumber)
         {
-            Name = "";
-            PhoneNumber = "";
+            this.Name = Name;
+            this.PhoneNumber = PhoneNumber;
         }
-        public void Add()
-        {
-            Console.WriteLine($"Введите имя пользователя:");
-            Name = Console.ReadLine();
-            Console.Clear();
-            Console.WriteLine($"Введите номер телефона:");
-            PhoneNumber = Console.ReadLine();
-            Console.Clear();
-        }
-        public void Print() => Console.WriteLine($"{Name} {PhoneNumber}");
     }
 }

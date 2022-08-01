@@ -3,67 +3,140 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace Lesson5
 {
     internal class SubscribersList
     {
-        public List<string> Subscribers = new List<string>();
+        /// <summary>
+        /// Пополняемый список абонентов
+        /// </summary>
+        public List<Subscriber> Subscribers = new List<Subscriber>();
         /// <summary>
         /// Конструктор для работы со списком записей справочника
         /// </summary>
         public SubscribersList() { }
 
-        public void Add(string name, string phoneNumber)
+        /// <summary>
+        /// Добавляет нового абонента в списоок.
+        /// </summary>
+        public void AddSubscriber()
         {
-            Subscribers.Add(name);
-            Subscribers.Add(phoneNumber);
-        }
-        public void Remove(string name) => Subscribers.Remove(name);
-        public void Clear() => Subscribers.Clear();
+            Console.WriteLine("Введите имя:");
+            string? newName = Console.ReadLine();
+            Console.WriteLine("Введите номер:");
+            string? newPhoneNumber = Console.ReadLine();
 
-        public void SearchName(string name)
+            if (ISNewSubscriberCorrect(newName, newPhoneNumber))
+            {
+                Subscriber newSubscriber = new Subscriber (newName, newPhoneNumber);
+                Subscribers.Add(newSubscriber);
+                Console.WriteLine("Пользователь добавлен");
+            }
+
+        }
+
+        /// <summary>
+        /// Проверяет данные абонента
+        /// </summary>
+        /// <param name="name">имя абонента</param>
+        /// <param name="phoneNumber">номер</param>
+        /// <returns>корректно ли введены данные</returns>
+        private bool ISNewSubscriberCorrect(string name, string phoneNumber)
         {
-            List<int> IndexName = new List<int>();
+            string strPattern = @"(\+7|8|\b)[\(\s-]*(\d)[\s-]*(\d)[\s-]*(\d)[)\s-]*(\d)[\s-]*(\d)[\s-]*(\d)[\s-]*(\d)[\s-]*(\d)[\s-]*(\d)[\s-]*(\d)";
+            if (name == null || phoneNumber == null)
+            {
+                Console.WriteLine("Отсутствуют данные");
+                return false;
+            }
+
+            if (Regex.IsMatch(phoneNumber, strPattern))
+            {
+                return true;
+            }
+            else
+            {
+                Console.WriteLine("Введенное значение не является номером");
+                return false;
+            }
 
             for (int i = 0; i < Subscribers.Count; i++)
             {
-                if (Subscribers[i] == name) IndexName.Add(i);
+                if (Subscribers[i].PhoneNumber == phoneNumber)
+                {
+                    Console.WriteLine("Такой номер уже существует");
+                    return false;
+                }
+            }
+            return true;
+        }
+        /// <summary>
+        /// Поиск абонентов по имени
+        /// </summary>
+        /// <param name="name">Имя абонента</param>
+        public void SearchName(string name)
+        {
+            List<Subscriber> IndexName = new List<Subscriber>();
+            IndexName.Clear();
 
+            for (int i = 0; i < Subscribers.Count; i++)
+            {
+                if (Subscribers[i].Name == name)
+                {
+                    IndexName.Add(Subscribers[i]);
+                }
             }
             if (IndexName.Count > 0)
             {
-                for (int i = 0; i < IndexName.Count; i++)
-                {
-                    Console.WriteLine($"{Subscribers[IndexName[i]]}: {Subscribers[IndexName[i] + 1]}");
-                }
+                PrintAll(IndexName);
             }
             else Console.WriteLine("Абонента с таким именем нет в справочнике.");
         }
-
+        /// <summary>
+        /// Поиск абонентов по номеру телефона
+        /// </summary>
+        /// <param name="phonenumber">Номер телефона для поиска</param>
         public void SearchPhonenumber(string phonenumber)
         {
-            List<int> IndexPhonenumber = new List<int>();
+            List<Subscriber> IndexPhonenumber = new List<Subscriber>();
+            IndexPhonenumber.Clear();
 
             for (int i = 0; i < Subscribers.Count; i++)
             {
-                if (Subscribers[i] == phonenumber) IndexPhonenumber.Add(i);
+                if (Subscribers[i].PhoneNumber == phonenumber)
+                {
+                 IndexPhonenumber.Add(Subscribers[i]);
+                }
             }
-            for (int i = 0; i < IndexPhonenumber.Count; i++)
+            if (IndexPhonenumber.Count > 0)
             {
-                Console.WriteLine($"{Subscribers[IndexPhonenumber[i-1]]}: {Subscribers[IndexPhonenumber[i]]}");
+                PrintAll(IndexPhonenumber);
             }
+            else Console.WriteLine("Абонента с таким номером телефона нет в справочнике.");
         }
-        public void PrintAll()
+        /// <summary>
+        /// Выведение на консоль полного списка абонентов
+        /// </summary>
+        /// <param name="Subscribers">Список абонентов</param>
+        public void PrintAll(List<Subscriber> Subscribers)
         {
-            for (int i = 0; i < Subscribers.Count; i += 2)
-            { 
-                Console.WriteLine($"{Subscribers[i]}: {Subscribers[i + 1]}"); 
-            } 
+            if (Subscribers.Count!=0)
+            {
+                for (int i = 0; i < Subscribers.Count; i++)
+                {
+                    Console.WriteLine($"{Subscribers[i].Name} , {Subscribers[i].PhoneNumber}");
+                }
+            }
+            else Console.WriteLine("Список абонентов пуст.");
         }
-        public bool SearchNumberEquals(string phonenumber)
+        /// <summary>
+        /// Очистка списка абонентов
+        /// </summary>
+        public void Clear()
         {
-            return Subscribers.Contains(phonenumber);
+            Subscribers.Clear();
         }
     }
 }
