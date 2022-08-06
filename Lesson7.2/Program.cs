@@ -4,29 +4,33 @@
     {
         static void Main(string[] args)
         {
-            MyList<int> list1 = new MyList<int>();
-            int n = 6;
+            MyList<int> newList = new MyList<int>();
+            int n = 10;
             for (int i = 0; i < n; i++)
             {
-                list1.Add(i);
-                Console.WriteLine(list1[i]);
+                newList.Add(i);
+                Console.WriteLine(newList[i]);
             }
-            list1[3] = 4;
             Console.WriteLine("------------");
-            Console.WriteLine(list1[3]); //получаем элемент по индексу
+            Console.WriteLine("Третий элемент поменяли на 4");
+            newList[3] = 4;
+            newList.Print();
             Console.WriteLine("------------");
-            Console.WriteLine(list1.Count); //получаем количество элементов в массиве
-
-            list1.Del(4);
+            Console.WriteLine("Удалили все элементы равные 4");
+            newList.DelName(4); 
+            newList.Print();
+            Console.WriteLine($"Количество элементов в массиве: {newList.Count}");
             Console.WriteLine("------------");
-            Console.WriteLine(list1[4]);
+            Console.WriteLine("Удалили элемент с индексом 4");
+            newList.DelIndex(4);
+            newList.Print();
+            Console.WriteLine($"Количество элементов в массиве: {newList.Count}");
             Console.WriteLine("------------");
-            Console.WriteLine(list1.Count);
-            Console.WriteLine("------------");
-            for (int i = 0; i < list1.Count; i++)
-            {
-                Console.WriteLine(list1[i]);
-            }
+            Console.WriteLine("Удалили элементы в массиве с индексами 3,7,5");
+            int[] nums = {3,7,5};
+            newList.DelIndex(nums);
+            newList.Print();
+            Console.WriteLine($"Количество элементов в массиве: {newList.Count}");
         }
     }
 }
