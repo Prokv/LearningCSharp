@@ -22,7 +22,7 @@ namespace Lesson7._1
         {
             this.Alias = alias;
         }
-        public override void Voice()
+        public override void MakeVoice()
         {
             Console.WriteLine("Мяу-мяу");
         }

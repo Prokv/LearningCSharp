@@ -5,10 +5,10 @@
         static void Main()
         {
             Pet Мурка = new Pet("Мурка", "Кошка");
-            Мурка.Voice();
+            Мурка.MakeVoice();
 
             Animal Медведь = new Animal("Медведь");
-            Медведь.Voice();
+            Медведь.MakeVoice();
         }
     }
 }

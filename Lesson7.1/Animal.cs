@@ -6,22 +6,32 @@ using System.Threading.Tasks;
 
 namespace Lesson7._1
 {
-    internal class Animal
+    internal abstract class Animal
     {
+
+        private string? name;
+
         /// <summary>
-        /// Название животного.
+        /// Название
         /// </summary>
-        public string? name;
+        public string ? Name { get { return name; } }
+
+        private int weight;
+
         /// <summary>
-        /// Вес животного.
+        /// Вес
         /// </summary>
-        public int weight;
+        public int? Weight { get { return weight; } }
+
+        private int age;
+
         /// <summary>
-        /// Возраст животного.
+        /// Возраст
         /// </summary>
-        public int age;
+        public int? Age { get { return age; } }
+
         /// <summary>
-        /// Конструктор класса Животные
+        /// Конструктор
         /// </summary>
         /// <param name="name">Название животного (вид)</param>
         /// <param name="weight">Вес животного</param>
@@ -32,8 +42,9 @@ namespace Lesson7._1
             this.weight = weight;
             this.age = age;
         }
+
         /// <summary>
-        /// Конструктор класса Животные
+        /// Конструктор
         /// </summary>
         /// <param name="name">Название животного (вид)</param>
         /// <param name="weight">Вес животного</param>
@@ -42,16 +53,19 @@ namespace Lesson7._1
             this.name = name;
             this.weight = weight;
         }
+
         /// <summary>
-        /// Конструктор класса Животные
+        /// Конструктор
         /// </summary>
         /// <param name="name">Название животного (вид)</param>
         public Animal(string name)
         {
             this.name = name;
         }
-
-        public virtual void Voice()
+        /// <summary>
+        /// Издать голос
+        /// </summary>
+        public virtual void MakeVoice()
         {
             Console.WriteLine("P-р-р-р-р-р");
         }
