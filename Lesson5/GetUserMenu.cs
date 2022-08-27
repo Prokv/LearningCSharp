@@ -15,6 +15,9 @@ namespace Lesson5
         {           
             SubscribersList.Clear();
             Phonebook.getInstance().ReadData(SubscribersList.Subscribers);
+            SubscribersList.UserAdd += UserAdd;
+            SubscribersList.UserDel += UserDelete;
+            SubscribersList.Notify += Notify;
 
             int numberOfMenu;
             do
@@ -77,6 +80,25 @@ namespace Lesson5
                 return choiceOfUser;
             }
             else return 0;
+        }
+
+        public void UserAdd (string message)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(message);
+            Console.ForegroundColor = ConsoleColor.Gray;
+        }
+
+        public void UserDelete(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(message);
+            Console.ForegroundColor = ConsoleColor.Gray;
+        }
+
+        public void Notify(Subscriber subscriber, string message)
+        {
+            Console.WriteLine($"{message}. Имя абонента: {subscriber.Name}, номер телефона: {subscriber.PhoneNumber}");
         }
     }
 }

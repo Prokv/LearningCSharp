@@ -18,8 +18,15 @@ namespace Lesson5
         /// </summary>
         public SubscribersList() { }
 
+        public delegate void EventHandlerAddOrDelete (string message);
+        public event EventHandlerAddOrDelete? UserAdd;
+        public event EventHandlerAddOrDelete? UserDel;
+
+        public delegate void EventHandlerSearchOrWrite(Subscriber subscriber, string message);
+        public event EventHandlerSearchOrWrite? Notify;
+
         /// <summary>
-        /// Добавляет нового абонента в списоок.
+        /// Добавляет нового абонента в список.
         /// </summary>
         public void AddSubscriber()
         {
@@ -32,7 +39,7 @@ namespace Lesson5
             {
                 Subscriber newSubscriber = new Subscriber (newName, newPhoneNumber);
                 Subscribers.Add(newSubscriber);
-                Console.WriteLine("Пользователь добавлен");
+                UserAdd?.Invoke("Пользователь добавлен");
             }
 
         }
@@ -52,6 +59,15 @@ namespace Lesson5
                 return false;
             }
 
+            for (int i = 0; i < Subscribers.Count; i++)
+            {
+                if (Subscribers[i].PhoneNumber == phoneNumber)
+                {
+                    Console.WriteLine("Такой номер уже существует");
+                    return false;
+                }
+            }
+
             if (Regex.IsMatch(phoneNumber, strPattern))
             {
                 return true;
@@ -60,15 +76,6 @@ namespace Lesson5
             {
                 Console.WriteLine("Введенное значение не является номером");
                 return false;
-            }
-
-            for (int i = 0; i < Subscribers.Count; i++)
-            {
-                if (Subscribers[i].PhoneNumber == phoneNumber)
-                {
-                    Console.WriteLine("Такой номер уже существует");
-                    return false;
-                }
             }
             return true;
         }
@@ -126,7 +133,8 @@ namespace Lesson5
             {
                 for (int i = 0; i < Subscribers.Count; i++)
                 {
-                    Console.WriteLine($"{Subscribers[i].Name} , {Subscribers[i].PhoneNumber}");
+
+                    Notify?.Invoke(Subscribers[i],"Найден пользователь");
                 }
             }
             else Console.WriteLine("Список абонентов пуст.");
