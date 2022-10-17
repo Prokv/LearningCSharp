@@ -7,8 +7,6 @@
             Pet Мурка = new Pet("Мурка", "Кошка");
             Мурка.MakeVoice();
 
-            Animal Медведь = new Animal("Медведь");
-            Медведь.MakeVoice();
         }
     }
 }
