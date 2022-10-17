@@ -24,8 +24,7 @@ namespace Final_Project
                 Console.WriteLine("Файл \"{0}\" найден.", pathDirectory);
             }
 
-            List<PdfMetaData> bookList = new List<PdfMetaData>();
-            BooksList booksList = new BooksList(bookList);
+            BooksList booksList = new BooksList();
 
             FileInfo[] files = dirName.GetFiles("*.pdf");
             Console.WriteLine("Файлы:");
@@ -34,7 +33,7 @@ namespace Final_Project
                 //Console.WriteLine(file.Name);
                 booksList.AddNewBookMetaInfo(file.Name, file.FullName);
             }
-            string outputInfo=booksList.OutputAll();
+            string outputInfo= BooksList.OutputAll();
             Console.WriteLine(outputInfo);
         }
     }

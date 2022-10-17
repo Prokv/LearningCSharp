@@ -10,12 +10,20 @@ namespace Final_Project
 {
     internal class BooksList
     {
-        List<PdfMetaData> bookList = new List<PdfMetaData>();
+        public static List<PdfMetaData> bookList = new List<PdfMetaData>();
 
-        public BooksList (List<PdfMetaData> bookList)
+        private static BooksList? instance;
+
+        public static BooksList getInstance ()
         {
-            this.bookList = bookList;
+            if (instance == null)
+                instance = new BooksList();
+            return instance;
 
+        }
+        public BooksList ()
+        {
+         bookList=new List<PdfMetaData>();
         }
 
         public void AddNewBookMetaInfo(string FileName, string PathFile)
@@ -105,7 +113,7 @@ namespace Final_Project
             bookList.Clear();
         }
 
-        public string OutputAll()
+        public static string OutputAll()
         {
             string outputInfo="";
 
@@ -122,10 +130,9 @@ namespace Final_Project
                 outputInfo = "Список файлов пуст.";
             }
             return outputInfo;
-            //Console.WriteLine(outputInfo);
         }
 
-        public string OutputById(int Id)
+        public static string OutputById(int Id)
         {
             string outputInfo="Значение не найдено";
 
@@ -142,7 +149,23 @@ namespace Final_Project
                 }
             }
             return outputInfo;
-            //Console.WriteLine(outputInfo);
+        }
+
+        public static string[] GetFileName (int Id)
+        {
+            string[] outputInfo = new string[2];
+            outputInfo[0]="Файл не найден";
+
+            for (int i = 0; i < bookList.Count; i++)
+            {
+                if (bookList[i].Id == Id)
+                {
+                    outputInfo[0] = bookList[i].FileName;
+                    outputInfo[1] = bookList[i].PathFile;
+                    break;
+                }
+            }
+            return outputInfo;
         }
     }
 }

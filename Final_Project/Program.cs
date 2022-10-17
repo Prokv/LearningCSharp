@@ -15,26 +15,25 @@ namespace Final_Project
         static void Main(string[] args)
         {
 
+            //Создаем директорию для хранения Pdf файлов (книг). Запускаем обработчик пдф файлов в этой директории.//
+            PdfHandler getPdfHandler = new PdfHandler();
+
             //Создаем и запускаем Телеграмм Бота//
-            ITelegramBotClient bot = new TelegramBotClient("5520714688:AAFw0UIaWAx0pCP8NfWQ0I7zQ9rH9KWudZE");
-            Console.WriteLine("Запущен бот " + bot.GetMeAsync().Result.FirstName);
+            ITelegramBotClient botClient = new TelegramBotClient("5520714688:AAFw0UIaWAx0pCP8NfWQ0I7zQ9rH9KWudZE");
+            Console.WriteLine("Запущен бот " + botClient.GetMeAsync().Result.FirstName);
 
             var cts = new CancellationTokenSource();
             var cancellationToken = cts.Token;
             var receiverOptions = new ReceiverOptions
             {
-                AllowedUpdates = { }, // receive all update types
+                AllowedUpdates = { }
             };
-            bot.StartReceiving(
+            botClient.StartReceiving(
                 TelegramBot.HandleUpdateAsync,
                 TelegramBot.HandleErrorAsync,
                 receiverOptions,
                 cancellationToken
             );
-
-            //Создаем директорию для хранения Pdf файлов (книг). Запускаем обработчик пдф файлов в этой директории.//
-
-            PdfHandler getPdfHandler = new PdfHandler();
 
             Console.ReadLine();
         }
