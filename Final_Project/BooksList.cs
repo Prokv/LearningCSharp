@@ -26,7 +26,7 @@ namespace Final_Project
          bookList=new List<PdfMetaData>();
         }
 
-        public void AddNewBookMetaInfo(string FileName, string PathFile)
+        public static void AddNewBookMetaInfo(string FileName, string PathFile)
         {
             Aspose.Pdf.Facades.PdfFileInfo fInfo = new Aspose.Pdf.Facades.PdfFileInfo(PathFile);
 
@@ -60,76 +60,73 @@ namespace Final_Project
             bookList.Add(newMetaData);
         }
 
-        public void SetAuthor (int Id, string Author)
+        public static List<PdfMetaData> SetAuthorInList (int Id, string Author)
         {
-
+            List<PdfMetaData> outputInfo = new List<PdfMetaData>();
             for (int i = 0; i < bookList.Count; i++)
             {
                 if (bookList[i].Id == Id)
                 {
                     bookList[i].Author = Author;
+                    PdfHandler.SetAuthorInFile(bookList[i].PathFile, Author);
+                    outputInfo.Add(bookList[i]);
+                    break;
                 }
             }
+            return outputInfo;
         }
 
-        public void SetTitle(int Id, string Title)
+        public static List<PdfMetaData> SetTitleInList(int Id, string Title)
         {
-
+            List<PdfMetaData> outputInfo = new List<PdfMetaData>();
             for (int i = 0; i < bookList.Count; i++)
             {
                 if (bookList[i].Id == Id)
                 {
                     bookList[i].Title = Title;
+                    PdfHandler.SetTitleInFile(bookList[i].PathFile, Title);
+                    outputInfo.Add(bookList[i]);
+                    break;
                 }
             }
+            return outputInfo;
         }
 
-        public void SetKeywords(int Id, string Keywords)
+        public static List<PdfMetaData> SetKeywordsInList(int Id, string Keywords)
         {
-
+            List<PdfMetaData> outputInfo = new List<PdfMetaData>();
             for (int i = 0; i < bookList.Count; i++)
             {
                 if (bookList[i].Id == Id)
                 {
                     bookList[i].Keywords = Keywords;
+                    PdfHandler.SetKeywordsInFile(bookList[i].PathFile, Keywords);
+                    outputInfo.Add(bookList[i]);
+                    break;
                 }
             }
+            return outputInfo;
         }
 
-        public void SetGenre(int Id, string Genre)
+        public static List<PdfMetaData> SetGenreInList(int Id, string Genre)
         {
-
+            List<PdfMetaData> outputInfo = new List<PdfMetaData>();
             for (int i = 0; i < bookList.Count; i++)
             {
                 if (bookList[i].Id == Id)
                 {
                     bookList[i].Genre = Genre;
+                    PdfHandler.SetGenreInFile(bookList[i].PathFile, Genre);
+                    outputInfo.Add(bookList[i]);
+                    break;
                 }
-            }
-        }
-
-        public void ClearListData()
-        {
-            bookList.Clear();
-        }
-
-        public static string OutputAll()
-        {
-            string outputInfo="";
-
-            if (bookList.Count != 0)
-            {
-                for (int i = 0; i < bookList.Count; i++)
-                {
-                    string bookInfo= OutputById(bookList[i].Id);
-                    outputInfo = outputInfo+"\n" + bookInfo;
-                }
-            }
-            else 
-            {
-                outputInfo = "Список файлов пуст.";
             }
             return outputInfo;
+        }
+
+        public static void ClearListData()
+        {
+            bookList.Clear();
         }
 
         public static string OutputById(int Id)
@@ -140,8 +137,7 @@ namespace Final_Project
             {
                 if (bookList[i].Id == Id)
                 {
-                   outputInfo = $"Номер в каталоге: {bookList[i].Id}\n" +
-                                $"Автор: {bookList[i].Author}\n" +
+                   outputInfo = $"Автор: {bookList[i].Author}\n" +
                                 $"Название: {bookList[i].Title}\n" +
                                 $"Жанр: {bookList[i].Genre}\n" +
                                 $"Название файла: {bookList[i].FileName}";
@@ -165,6 +161,91 @@ namespace Final_Project
                     break;
                 }
             }
+            return outputInfo;
+        }
+
+        public static List<PdfMetaData> FilterList(string Field, string Name)
+        {
+            List <PdfMetaData> outputInfo = new List<PdfMetaData>();
+            string field = Field;
+            string name=Name;
+
+            switch (field)
+            {
+                case "Author":
+                    for (int i = 0; i < bookList.Count; i++)
+                    {
+                        if (bookList[i].Author.Contains(name))
+                        {
+                            outputInfo.Add(bookList[i]);
+                        }
+                    }
+                    field = "автору";
+                    break;
+
+                case "Title":
+                    for (int i = 0; i < bookList.Count; i++)
+                    {
+                        if (bookList[i].Title.Contains(name))
+                        {
+                            outputInfo.Add(bookList[i]);
+                        }
+                    }
+                    field = "названию";
+                    break;
+
+                case "Genre":
+                    for (int i = 0; i < bookList.Count; i++)
+                    {
+                        if (bookList[i].Genre.Contains(name))
+                        {
+                            outputInfo.Add(bookList[i]);
+                        }
+                    }
+                    field = "жанру";
+                    break;
+
+                case "Keywords":
+                    for (int i = 0; i < bookList.Count; i++)
+                    {
+                        if (bookList[i].Keywords.Contains(name))
+                        {
+                            outputInfo.Add(bookList[i]);
+                        }
+                    }
+                    field = "теме";
+                    break;
+
+            }
+            return outputInfo;
+        }
+        public static List<PdfMetaData> SortList(string Trend)
+        {
+            List<PdfMetaData> outputInfo = new List<PdfMetaData>();
+            string trend = Trend;
+            switch (trend)
+            {
+                case "Sort_Up_Author":
+                    outputInfo=bookList.OrderBy(x => x.Author).ToList();
+                    break;
+
+                case "Sort_Down_Author":
+                    outputInfo = bookList.OrderByDescending(x => x.Author).ToList();
+                    break;
+                case "Sort_Up_Genre":
+                    outputInfo = bookList.OrderBy(x => x.Genre).ToList();
+                    break;
+                case "Sort_Down_Genre":
+                    outputInfo = bookList.OrderByDescending(x => x.Genre).ToList();
+                    break;
+                case "Sort_Up_Title":
+                    outputInfo = bookList.OrderBy(x => x.Title).ToList();
+                    break;
+                case "Sort_Down_Title":
+                    outputInfo = bookList.OrderByDescending(x => x.Title).ToList();
+                    break;
+            }
+
             return outputInfo;
         }
     }
