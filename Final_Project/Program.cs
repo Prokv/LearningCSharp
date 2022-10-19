@@ -21,10 +21,6 @@ namespace Final_Project
             //Создаем и запускаем Телеграмм Бота//
             ITelegramBotClient botClient = new TelegramBotClient("******"); //токен по запросу получаем.
             Console.WriteLine("Запущен бот " + botClient.GetMeAsync().Result.FirstName);
-=======
-            ITelegramBotClient bot = new TelegramBotClient("******");
-            Console.WriteLine("Запущен бот " + bot.GetMeAsync().Result.FirstName);
->>>>>>> 008ab3420908f5da960196184407979ccc6d919c
 
             var cts = new CancellationTokenSource();
             var cancellationToken = cts.Token;
