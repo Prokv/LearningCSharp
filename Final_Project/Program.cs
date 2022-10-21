@@ -19,7 +19,7 @@ namespace Final_Project
             PdfHandler getPdfHandler = new PdfHandler();
 
             //Создаем и запускаем Телеграмм Бота//
-            ITelegramBotClient botClient = new TelegramBotClient("******"); //токен по запросу получаем.
+            ITelegramBotClient botClient = new TelegramBotClient("****"); //токен по запросу получаем.
             Console.WriteLine("Запущен бот " + botClient.GetMeAsync().Result.FirstName);
 
             var cts = new CancellationTokenSource();

@@ -137,10 +137,11 @@ namespace Final_Project
             {
                 if (bookList[i].Id == Id)
                 {
-                   outputInfo = $"Автор: {bookList[i].Author}\n" +
-                                $"Название: {bookList[i].Title}\n" +
-                                $"Жанр: {bookList[i].Genre}\n" +
-                                $"Название файла: {bookList[i].FileName}";
+                   outputInfo = $"<u>Автор</u>: {bookList[i].Author}\n" +
+                                $"<u>Название</u>: {bookList[i].Title}\n" +
+                                $"<u>Жанр</u>: {bookList[i].Genre}\n" +
+                                $"<u>Тема</u>: {bookList[i].Keywords}\n" +
+                                $"<u>Название файла</u>: {bookList[i].FileName}";
                     break;
                 }
             }
