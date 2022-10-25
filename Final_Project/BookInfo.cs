@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Final_Project
 {
-    internal class PdfMetaData
+    internal class BookInfo
     { 
         /// <summary>
         /// Номер книги в каталоге
@@ -33,12 +33,21 @@ namespace Final_Project
         /// </summary>
         public string FileName { get; set; }
         /// <summary>
-        /// Путь к файлу
+        /// Полный путь к файлу
         /// </summary>
         public string PathFile { get; set; } 
 
-
-        public PdfMetaData (int Id, string Author, string Title, string Keywords, string Genre, string FileName, string PathFile)
+        /// <summary>
+        /// Конструктор класса.
+        /// </summary>
+        /// <param name="Id">Номер книги в каталоге</param>
+        /// <param name="Author">Название автора</param>
+        /// <param name="Title">Название книги</param>
+        /// <param name="Keywords">Тема</param>
+        /// <param name="Genre">Жанр</param>
+        /// <param name="FileName">Наименование файла</param>
+        /// <param name="PathFile">Полный путь файла</param>
+        public BookInfo (int Id, string Author, string Title, string Keywords, string Genre, string FileName, string PathFile)
         {
             this.Id = Id;
             this.Author = Author;

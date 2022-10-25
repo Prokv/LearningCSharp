@@ -16,7 +16,7 @@ namespace Final_Project
         {
 
             //Создаем директорию для хранения Pdf файлов (книг). Запускаем обработчик пдф файлов в этой директории.//
-            PdfHandler getPdfHandler = new PdfHandler();
+            FileHandler getPdfHandler = new FileHandler();
 
             //Создаем и запускаем Телеграмм Бота//
             ITelegramBotClient botClient = new TelegramBotClient("****"); //токен по запросу получаем.
@@ -29,8 +29,8 @@ namespace Final_Project
                 AllowedUpdates = { }
             };
             botClient.StartReceiving(
-                TelegramBot.HandleUpdateAsync,
-                TelegramBot.HandleErrorAsync,
+                UpdateHandler.HandleUpdateAsync,
+                UpdateHandler.HandleErrorAsync,
                 receiverOptions,
                 cancellationToken
             );

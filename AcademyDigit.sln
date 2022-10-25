@@ -19,7 +19,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lesson8 Tamagotchi", "Lesso
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Final_Project", "Final_Project\Final_Project.csproj", "{F8CF0689-CA2A-46FF-B50C-235685B5386C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test1", "Test1\Test1.csproj", "{EDA0601A-6601-4107-B803-DF90CE966A44}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test1", "Test1\Test1.csproj", "{EDA0601A-6601-4107-B803-DF90CE966A44}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Final_Project_Test", "Final_Project_Test\Final_Project_Test.csproj", "{5B258A18-F0AD-48A4-B242-54836B0AB522}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F8CF0689-CA2A-46FF-B50C-235685B5386C} = {F8CF0689-CA2A-46FF-B50C-235685B5386C}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +68,10 @@ Global
 		{EDA0601A-6601-4107-B803-DF90CE966A44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDA0601A-6601-4107-B803-DF90CE966A44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDA0601A-6601-4107-B803-DF90CE966A44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B258A18-F0AD-48A4-B242-54836B0AB522}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B258A18-F0AD-48A4-B242-54836B0AB522}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B258A18-F0AD-48A4-B242-54836B0AB522}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B258A18-F0AD-48A4-B242-54836B0AB522}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

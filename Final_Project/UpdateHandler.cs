@@ -13,31 +13,48 @@ using Telegram.Bot.Types.InputFiles;
 
 namespace Final_Project
 {
-    internal class TelegramBot
+    internal class UpdateHandler
     {
-        public static string answer;
-        public static int bookId;
-        public static int stringNumber;
-        public static int stepNumber=3;
-        public static List<PdfMetaData> userBookList = new List<PdfMetaData>();
-
+        /// <summary>
+        /// Обработчик типов сообщений
+        /// </summary>
+        /// <param name="botClient">Экземпляр бота</param>
+        /// <param name="update">Сообщение</param>
+        /// <param name="cancellationToken">Ключ доступа к боту (токен)</param>
+        /// <returns></returns>
         public static async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             if (update.Type == UpdateType.Message && update?.Message?.Text != null)
             {
+                UserSettingsList.Add(update.Message.From.Id);
                 await HandleMessage(botClient, update.Message);
                 return;
             }
 
             if (update.Type == UpdateType.CallbackQuery)
             {
+                UserSettingsList.Add(update.CallbackQuery.From.Id);
                 await HandleCallbackQuery(botClient, update.CallbackQuery);
                 return;
             }
         }
 
+        /// <summary>
+        /// Обработчик текстовых сообщений
+        /// </summary>
+        /// <param name="botClient">Экземпляр бота</param>
+        /// <param name="message">Сообщение</param>
+        /// <returns></returns>
         public static async Task HandleMessage(ITelegramBotClient botClient, Message message)
         {
+            long userId = message.From.Id;
+            object[] userInfo = UserSettingsList.GetUserInfo(userId);
+            string userReturn = userInfo[0].ToString();
+            int bookId = Convert.ToInt32(userInfo[1]);
+            int lineNumber = Convert.ToInt32(userInfo[2]);
+            int stepNumber = Convert.ToInt32(userInfo[3]);
+            List<BookInfo> userBookList = UserSettingsList.GetUserBookList(userId);
+
             if (message.Text == "/start")
             {
                 await botClient.SendTextMessageAsync(message.Chat.Id, "/GetBooksCatalog - получить список всех книг\n" +
@@ -47,8 +64,10 @@ namespace Final_Project
 
             if (message.Text == "/GetBooksCatalog")
             {
-                stringNumber = 0;
-                GetBooksCatalog(botClient, message, BooksList.bookList);
+                lineNumber = 0;
+                userInfo[2] = lineNumber;
+                UserSettingsList.SetUserInfo(userId, userInfo);
+                GetBooksCatalog(botClient, message, BookList.bookList, userId);
                 return;
             }
 
@@ -114,153 +133,162 @@ namespace Final_Project
 
             if (message.Text == "Update")
             {
-                PdfHandler.Update();
-                stringNumber = 0;
-                GetBooksCatalog(botClient, message, BooksList.bookList);
+                FileHandler.Update();
+                lineNumber = 0;
+                userInfo[2] = lineNumber;
+                UserSettingsList.SetUserInfo(userId, userInfo);
+                GetBooksCatalog(botClient, message, BookList.bookList, userId);
                 return;
             }
 
             if (message.Text == "Forward")
             {
-                stringNumber += stepNumber;
-                if (stringNumber>=userBookList.Count)
+                lineNumber += stepNumber;
+                if (lineNumber>=userBookList.Count)
                 {
-                    stringNumber=userBookList.Count;
+                    lineNumber=userBookList.Count;
                     await botClient.SendTextMessageAsync(message.Chat.Id, "<strong>Вы достигли конца списка!</strong>", ParseMode.Html, replyMarkup: new ReplyKeyboardRemove()).ConfigureAwait(false);
                     return;
                 }
-                List<PdfMetaData> newUserBookList = new List<PdfMetaData>();
+                userInfo[2] = lineNumber;
+                UserSettingsList.SetUserInfo(userId, userInfo);
+                List<BookInfo> newUserBookList = new List<BookInfo>();
                 for (int i = 0; i < userBookList.Count; i++)
                 {
                     newUserBookList.Add(userBookList[i]);
 
                 }
-                GetBooksCatalog(botClient, message, newUserBookList);
+                GetBooksCatalog(botClient, message, newUserBookList, userId);
                 return;
             }
 
-            //if (message.Text == "Backward")
-            //{
-            //    stringNumber -= stepNumber;
-            //    if (stringNumber < 0)
-            //    {
-            //        stringNumber = 0;
-            //        await botClient.SendTextMessageAsync(message.Chat.Id, "<strong>Вы достигли начала списка!</strong>", ParseMode.Html);
-            //        //return;
-            //    }
-            //    List<PdfMetaData> newUserBookList = new List<PdfMetaData>();
-            //    for (int i = 0; i < userBookList.Count; i++)
-            //    {
-            //        newUserBookList.Add(userBookList[i]);
-
-            //    }
-            //    GetBooksCatalog(botClient, message, newUserBookList);
-            //    return;
-            //}
-
-            if (answer!=null && answer.Contains("Filter"))
+            if (userReturn!=null && userReturn.Contains("Filter"))
             {
                 string field="";
-                switch (answer)
+                string user_mes = "";
+                switch (userReturn)
                 {
                     case "Filter_Author":
                         field = "Author";
-                        answer = "Список книг отфильтрован по автору";
+                        user_mes = "Список книг отфильтрован по автору";
                         break;
                     case "Filter_Title":
                         field = "Title";
-                        answer = "Список книг отфильтрован по названию";
+                        user_mes = "Список книг отфильтрован по названию";
                         break;
                     case "Filter_Genre":
                         field = "Genre";
-                        answer = "Список книг отфильтрован по жанру";
+                        user_mes = "Список книг отфильтрован по жанру";
                         break;
                     case "Filter_Keywords":
                         field = "Keywords";
-                        answer = "Список книг отфильтрован по теме";
+                        user_mes = "Список книг отфильтрован по теме";
                         break;
 
                 }
-                string name = message.Text;
-                List<PdfMetaData> outputInfo = BooksList.FilterList(field, name);
-                stringNumber = 0;
-                await botClient.SendTextMessageAsync(message.Chat.Id, $"<strong>{answer} :</strong>  <i>{name}</i>.", ParseMode.Html, replyMarkup: new ReplyKeyboardRemove()).ConfigureAwait(false);
-                await GetBooksCatalog(botClient, message, outputInfo);
-                answer = "";
+                string value = message.Text;
+                List<BookInfo> outputInfo = BookList.GetFilterList(field, value);
+                lineNumber = 0;
+                userReturn = "";
+                userInfo[0] = userReturn;
+                userInfo[2] = lineNumber;
+                UserSettingsList.SetUserInfo(userId, userInfo);
+                await botClient.SendTextMessageAsync(message.Chat.Id, $"<strong>{user_mes} :</strong>  <i>{value}</i>.", ParseMode.Html, replyMarkup: new ReplyKeyboardRemove()).ConfigureAwait(false);
+                await GetBooksCatalog(botClient, message, outputInfo, userId);
                 return;
             }
 
-            if (answer != null && answer.Contains("Transform"))
+            if (userReturn != null && userReturn.Contains("Transform"))
             {
                 string name = message.Text;
-                List<PdfMetaData> outputInfo = new List<PdfMetaData> ();
-                switch (answer)
+                List<BookInfo> outputInfo = new List<BookInfo> ();
+                switch (userReturn)
                 {
                     case "Transform_Author":
-                        outputInfo = BooksList.SetAuthorInList(bookId, name);
-                        answer = "Автор успешно изменен";
+                        outputInfo = BookList.SetAuthor(bookId, name);
+                        userReturn = "Автор успешно изменен";
                         break;
                     case "Transform_Title":
-                        outputInfo = BooksList.SetTitleInList(bookId, name);
-                        answer = "Название успешно изменено";
+                        outputInfo = BookList.SetTitle(bookId, name);
+                        userReturn = "Название успешно изменено";
                         break;
                     case "Transform_Genre":
-                        outputInfo = BooksList.SetGenreInList(bookId, name);
-                        answer = "Жанр упешно изменен";
+                        outputInfo = BookList.SetGenre(bookId, name);
+                        userReturn = "Жанр упешно изменен";
                         break;
                     case "Transform_Keywords":
-                        outputInfo =  BooksList.SetKeywordsInList(bookId, name);
-                        answer = "Тема упешно изменена";
+                        outputInfo =  BookList.SetKeywords(bookId, name);
+                        userReturn = "Тема упешно изменена";
                         break;
 
                 }
-                stringNumber = 0;
-                await botClient.SendTextMessageAsync(message.Chat.Id, $"<strong>{answer} на:</strong>  <i>{name}</i>.", ParseMode.Html);
-                await GetBooksCatalog(botClient, message, outputInfo);
-                answer = "";
+                lineNumber = 0;
+                await botClient.SendTextMessageAsync(message.Chat.Id, $"<strong>{userReturn} на:</strong>  <i>{name}</i>.", ParseMode.Html);
+                await GetBooksCatalog(botClient, message, outputInfo, userId);
+                userReturn = "";
                 bookId = 0;
+                userInfo[0] = userReturn;
+                userInfo[1] = bookId;
+                userInfo[2] = lineNumber;
+                UserSettingsList.SetUserInfo(userId, userInfo);
                 return;
             }
             await botClient.SendTextMessageAsync(message.Chat.Id, $"Нажмите /start чтобы ознакомиться с набором команд стартового меню");
         }
 
+        /// <summary>
+        /// Обработчик сообщений типа Callback
+        /// </summary>
+        /// <param name="botClient">Экземпляр бота</param>
+        /// <param name="callbackQuery">Сообщение</param>
+        /// <returns></returns>
         public static async Task HandleCallbackQuery(ITelegramBotClient botClient, CallbackQuery callbackQuery)
-        {
+        {      
+            long userId = callbackQuery.From.Id;
+            object[] userInfo = UserSettingsList.GetUserInfo(userId);
+            string userReturn = userInfo[0].ToString();
+            int bookId = Convert.ToInt32(userInfo[1]);
+            int lineNumber = Convert.ToInt32(userInfo[2]);
+            int stepNumber = Convert.ToInt32(userInfo[3]);
+            List<BookInfo> userBookList = UserSettingsList.GetUserBookList(userId);
+
             if (callbackQuery.Data.StartsWith("Filter"))
             {
                 string field = "";
-                switch (callbackQuery.Data)
+                userReturn = callbackQuery.Data;
+                switch (userReturn)
                 {
                     case "Filter_Author":
                         field = "автора";
-                        answer = "Filter_Author";
                         break;
 
                     case "Filter_Title":
                         field = "книги";
-                        answer = "Filter_Title";
                         break;
 
                     case "Filter_Genre":
                         field = "жанра";
-                        answer = "Filter_Genre";
                         break;
 
                     case "Filter_Keywords":
                         field = "темы";
-                        answer = "Filter_Keywords";
                         break;
                 }
+
+                userInfo[0] = userReturn;
+                UserSettingsList.SetUserInfo(userId, userInfo);
                 await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id,$"Напишите название {field}", replyMarkup: new ReplyKeyboardRemove()).ConfigureAwait(false);
                 return;
             }
 
             if (callbackQuery.Data.StartsWith("Sort"))
             {
-                string trend = callbackQuery.Data;
-                List<PdfMetaData> outputInfo = BooksList.SortList(trend);
-                stringNumber = 0;
-                await GetBooksCatalog(botClient, callbackQuery.Message, outputInfo);
+                string ordBy = callbackQuery.Data;
+                List<BookInfo> outputInfo = BookList.GetSortList(ordBy);
+                lineNumber = 0;
+                userInfo[2] = lineNumber;
+                UserSettingsList.SetUserInfo(userId, userInfo);
+                await GetBooksCatalog(botClient, callbackQuery.Message, outputInfo, userId);
                 return;
             }
 
@@ -271,8 +299,8 @@ namespace Final_Project
                 bool isNumber = int.TryParse(mes[1], out choiceOfUser);
                 if (isNumber)
                 {
-                    string[] outputInfo = BooksList.GetFileName(choiceOfUser);
-                    if (outputInfo[0] == "Файл не найден")
+                    string[] outputInfo = BookList.GetBookInfo(choiceOfUser);
+                    if (outputInfo[0] == "Значение не найдено")
                     {
                         await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, "Книга с таким номером не найдена!");
                         return;
@@ -281,10 +309,10 @@ namespace Final_Project
                     {
                         string emogiRocet = "\U0001F680";
                         await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, $"Ожидайте {emogiRocet}  идёт загрузка книги");
-                        await using Stream stream = System.IO.File.OpenRead(outputInfo[1]);
+                        await using Stream stream = System.IO.File.OpenRead(outputInfo[4]);
                         await botClient.SendDocumentAsync(
                                                             chatId: callbackQuery.Message.Chat.Id,
-                                                            document: new InputOnlineFile(content: stream, fileName: outputInfo[0])
+                                                            document: new InputOnlineFile(content: stream, fileName: outputInfo[3])
                                                             );
                         return;
                     }
@@ -297,7 +325,7 @@ namespace Final_Project
                 int choiceOfUser = 0;
                 string[] mes = callbackQuery.Data.Split("_", 2);
                 bool isNumber = int.TryParse(mes[1], out choiceOfUser);
-                outputInfo = BooksList.OutputById(choiceOfUser);
+                outputInfo = BookList.GetBookInfoToString(choiceOfUser);
                 InlineKeyboardMarkup keyboard = new(new[]
                                 {
                                                     new[]
@@ -320,33 +348,34 @@ namespace Final_Project
             {
                 string field = "";
                 string[] mes = callbackQuery.Data.Split("_", 3);
-                switch (mes[1])
+                string mes1=string.Join("_", mes[0], mes[1]);
+                switch (mes1)
                 {
-                    case "Author":
+                    case "Transform_Author":
                         field = "автора";
-                        answer = "Transform_Author";
                         break;
 
-                    case "Title":
+                    case "Transform_Title":
                         field = "книги";
-                        answer = "Transform_Title";
                         break;
 
-                    case "Genre":
+                    case "Transform_Genre":
                         field = "жанра";
-                        answer = "Transform_Genre";
                         break;
 
-                    case "Keywords":
+                    case "Transform_Keywords":
                         field = "темы";
-                        answer = "Transform_Keywords";
                         break;
                 }
+                userInfo[0] = mes1;
+                UserSettingsList.SetUserInfo(userId, userInfo);
                 int choiceOfUser = 0;
                 bool isNumber = int.TryParse(mes[2], out choiceOfUser);
                 if (isNumber)
                 {
                     bookId = choiceOfUser;
+                    userInfo[1] = bookId;
+                    UserSettingsList.SetUserInfo(userId, userInfo);
                 }
                 await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, $"Напишите название {field}");
                 return;
@@ -356,27 +385,34 @@ namespace Final_Project
             {
                 string[] mes = callbackQuery.Data.Split("_", 2);
                 int choiceOfUser = 0;
-                int count = BooksList.bookList.Count;
+                int count = BookList.bookList.Count;
                 string pathFile = "";
                 string fileName = "";
 
                 bool isNumber = int.TryParse(mes[1], out choiceOfUser);
                 for (int i = 0; i <count; i++)
                 {
-                    if (choiceOfUser == BooksList.bookList[i].Id)
+                    if (choiceOfUser == BookList.bookList[i].Id)
                     {
-                        pathFile = BooksList.bookList[i].PathFile;
-                        fileName = BooksList.bookList[i].FileName;
-                        PdfHandler.DeleteFile(pathFile);
+                        pathFile = BookList.bookList[i].PathFile;
+                        fileName = BookList.bookList[i].FileName;
+                        FileHandler.DeleteFile(pathFile);
                         await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, $"Файл {fileName}, удален.", replyMarkup: new ReplyKeyboardRemove()).ConfigureAwait(false);
                         break;           
                     }
                 }
-                PdfHandler.Update();
+                FileHandler.Update();
                 return;
             }
         }
 
+        /// <summary>
+        /// Обработчик ошибок
+        /// </summary>
+        /// <param name="botClient">Экземпляр бота</param>
+        /// <param name="exception">Ошибка</param>
+        /// <param name="cancellationToken">Токен</param>
+        /// <returns></returns>
         public static async Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
             // Некоторые действия
@@ -384,19 +420,36 @@ namespace Final_Project
             //await botClient.SendTextMessageAsync(update.Message.Chat.Id, "Произошла ошибка в работе телеграмм бота. Обратитесь к администратору!");
         }
 
-        public static async Task GetBooksCatalog (ITelegramBotClient botClient, Message message, List<PdfMetaData> bookList)
+        /// <summary>
+        /// Получить каталог книг
+        /// </summary>
+        /// <param name="botClient">Экземпляр бота</param>
+        /// <param name="message">Сообщение</param>
+        /// <param name="bookList">Список книг</param>
+        /// <param name="UserId">ИД пользователя</param>
+        /// <returns></returns>
+        public static async Task GetBooksCatalog (ITelegramBotClient botClient, Message message, List<BookInfo> bookList, long UserId)
         {
+            long userId = UserId;
+            object[] userInfo = UserSettingsList.GetUserInfo(userId);
+            int lineNumber = Convert.ToInt32(userInfo[2]);
+            int stepNumber = Convert.ToInt32(userInfo[3]);
+            List<BookInfo> userBookList = UserSettingsList.GetUserBookList(userId);
+
             int count = bookList.Count;
-            int lastListPosition= stringNumber+stepNumber;
+            int lastListPosition= lineNumber+stepNumber;
             if (lastListPosition > count) { lastListPosition = count; }
-            string outputInfo = $"<strong>Список книг номера ({stringNumber+1}-{lastListPosition}) из {count}:</strong>";
-            await botClient.SendTextMessageAsync(message.Chat.Id, outputInfo, ParseMode.Html);
+            string outputInfo = $"<strong>Список книг номера ({lineNumber + 1}-{lastListPosition}) из {count}:</strong>";
+            if (count!=1)
+            {  
+                await botClient.SendTextMessageAsync(message.Chat.Id, outputInfo, ParseMode.Html);
+            }
             if (count != 0)
             {
-                for (int i = stringNumber; i < lastListPosition; i++)
+                for (int i = lineNumber; i < lastListPosition; i++)
                 {
                     int bookId = bookList[i].Id;
-                    outputInfo = BooksList.OutputById(bookId);
+                    outputInfo = BookList.GetBookInfoToString(bookId);
                     InlineKeyboardMarkup keyboard_1 = new(new[]
                     {
                                             new[]
@@ -410,7 +463,10 @@ namespace Final_Project
                 }
                 if (lastListPosition == count)
                 {
-                    await botClient.SendTextMessageAsync(message.Chat.Id, "<strong>Вы достигли конца списка!</strong>", ParseMode.Html, replyMarkup: new ReplyKeyboardRemove()).ConfigureAwait(false);
+                    if (count != 1)
+                    {
+                        await botClient.SendTextMessageAsync(message.Chat.Id, "<strong>Вы достигли конца списка!</strong>", ParseMode.Html, replyMarkup: new ReplyKeyboardRemove()).ConfigureAwait(false);
+                    }                   
                     await botClient.SendTextMessageAsync(message.Chat.Id, "/GetBooksCatalog - получить список всех книг\n" +
                                       "/Keyboard - открыть клавиатуру для работы с каталогом");
                 }
@@ -432,11 +488,11 @@ namespace Final_Project
                 await botClient.SendTextMessageAsync(message.Chat.Id, outputInfo, ParseMode.Html, replyMarkup: new ReplyKeyboardRemove()).ConfigureAwait(false);
                 return;
             }
-
             userBookList.Clear();
             for (int i = 0; i < count; i++)
             {
                 userBookList.Add(bookList[i]);
+                UserSettingsList.SetUserBookList(userId, userBookList);
             }
         }
     }
