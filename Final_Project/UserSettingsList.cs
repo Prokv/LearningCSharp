@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Final_Project
 {
-    internal class UserSettingsList
+    public class UserSettingsList
     {
         /// <summary>
         /// Список пользовательских настроек
@@ -35,12 +35,12 @@ namespace Final_Project
                 }
             }
             long id = Id;
-            string userReturn = "";
+            string userResponse = "";
             int bookId=0;
-            int lineNumber=0;
-            int stepNumber= 3;
+            int startLine=0;
+            int step= 3;
             List<BookInfo> userBookList = new List<BookInfo>();
-            UserInfo userInfo = new UserInfo(id, userReturn, bookId, lineNumber,stepNumber, userBookList);
+            UserInfo userInfo = new UserInfo(id, userResponse, bookId, startLine,step, userBookList);
             UserInfo.Add(userInfo);
         }
 

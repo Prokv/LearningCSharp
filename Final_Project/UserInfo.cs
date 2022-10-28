@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Final_Project
 {
-    internal class UserInfo
+    public class UserInfo
     {
         /// <summary>
         /// ИД пользователя

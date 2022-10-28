@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace Final_Project
 {
-    internal class BookList
+    public class BookList
     {
         /// <summary>
         /// Список книг (каталог книг)

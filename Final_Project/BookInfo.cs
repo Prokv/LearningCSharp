@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Final_Project
 {
-    internal class BookInfo
+    public class BookInfo
     { 
         /// <summary>
         /// Номер книги в каталоге

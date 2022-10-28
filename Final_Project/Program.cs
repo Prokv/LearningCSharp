@@ -10,7 +10,7 @@ using Telegram.Bot.Exceptions;
 
 namespace Final_Project
 {
-    internal class Program
+    public class Program
     {
         static void Main(string[] args)
         {
@@ -19,7 +19,7 @@ namespace Final_Project
             FileHandler getPdfHandler = new FileHandler();
 
             //Создаем и запускаем Телеграмм Бота//
-            ITelegramBotClient botClient = new TelegramBotClient("****"); //токен по запросу получаем.
+            ITelegramBotClient botClient = new TelegramBotClient("5548052560:AAEA2yLsqf_CUyqF4Gaqi3jUax4upkbSO8s"); //токен по запросу получаем.
             Console.WriteLine("Запущен бот " + botClient.GetMeAsync().Result.FirstName);
 
             var cts = new CancellationTokenSource();

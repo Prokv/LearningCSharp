@@ -7,7 +7,7 @@ using Aspose.Pdf;
 
 namespace Final_Project
 {
-    internal class FileHandler
+    public class FileHandler
     {
         /// <summary>
         /// Директория хранилища книг
