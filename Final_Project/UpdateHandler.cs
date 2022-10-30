@@ -345,16 +345,36 @@ namespace Final_Project
                     }
                     else
                     {
-                        string emogiRocet = "\U0001F680";
-                        await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, $"Ожидайте {emogiRocet}  идёт загрузка книги");
+                        string emogiClock = "\U000023F3";
+                        await botClient.SendTextMessageAsync(callbackQuery.Message.Chat.Id, $"Ожидайте {emogiClock}  идёт загрузка книги");
                         await using Stream stream = System.IO.File.OpenRead(outputInfo[4]);
+
+                        InlineKeyboardMarkup keyboard = new(new[]
+                                                            {
+                                                                new[]
+                                                                {
+                                                                    InlineKeyboardButton.WithCallbackData("Открепить", $"Unpin"),
+                                                                    InlineKeyboardButton.WithCallbackData("Закрепить", $"Pin"),
+                                                                },
+                                                            });
                         await botClient.SendDocumentAsync(
                                                             chatId: callbackQuery.Message.Chat.Id,
-                                                            document: new InputOnlineFile(content: stream, fileName: outputInfo[3])
+                                                            document: new InputOnlineFile(content: stream, fileName: outputInfo[3]),
+                                                            replyMarkup: keyboard
                                                             );
                         return;
                     }
                 }
+            }
+
+            switch (callbackQuery.Data)
+            {
+                case "Pin":
+                    await botClient.PinChatMessageAsync(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId);
+                    break;
+                case "Unpin":
+                    await botClient.UnpinChatMessageAsync(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId);
+                    break;
             }
 
             if (callbackQuery.Data.StartsWith("Change"))
