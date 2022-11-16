@@ -12,28 +12,16 @@ namespace Final_Project
 {
     public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
+            //Запускаем класс для работы со списком книг.
+            BookList BookList = BookList.getInstance();
 
-            //Создаем директорию для хранения Pdf файлов (книг). Запускаем обработчик пдф файлов в этой директории.//
+            //Запускаем обработчик пдф файлов.
             FileHandler getPdfHandler = new FileHandler();
 
-            //Создаем и запускаем Телеграмм Бота//
-            ITelegramBotClient botClient = new TelegramBotClient("****"); //токен по запросу получаем.
-            Console.WriteLine("Запущен бот " + botClient.GetMeAsync().Result.FirstName);
-
-            var cts = new CancellationTokenSource();
-            var cancellationToken = cts.Token;
-            var receiverOptions = new ReceiverOptions
-            {
-                AllowedUpdates = { }
-            };
-            botClient.StartReceiving(
-                UpdateHandler.HandleUpdateAsync,
-                UpdateHandler.HandleErrorAsync,
-                receiverOptions,
-                cancellationToken
-            );
+            //Запускаем обработчик событий телеграмм бота
+            UpdateHandler UpdateHandler = new UpdateHandler();
 
             Console.ReadLine();
         }

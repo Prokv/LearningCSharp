@@ -9,7 +9,9 @@ namespace Directum
     internal class Menu
     {
         MeetingList MeetingList = MeetingList.getInstance();
-
+        /// <summary>
+        /// Конструктор класса
+        /// </summary>
         public Menu()
         {
             int numberOfMenu;
@@ -95,7 +97,10 @@ namespace Directum
             }
             while (numberOfMenu != 9);
         }
-
+        /// <summary>
+        /// Основное меню
+        /// </summary>
+        /// <returns></returns>
         public int UserMenu()
         {
             int choiceOfUser;
@@ -114,7 +119,10 @@ namespace Directum
             }
             else return 0;
         }
-
+        /// <summary>
+        /// Меню внесения изменений в созданную встречу
+        /// </summary>
+        /// <param name="Id">ИД встречи</param>
         public void RewriteMeet(int Id)
         {
             int choiceOfUser;

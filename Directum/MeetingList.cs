@@ -10,15 +10,35 @@ namespace Directum
 {
     internal class MeetingList
     {
+        /// <summary>
+        /// Путь к файлу со списком встреч, формат txt
+        /// </summary>
         public string path_txt = Path.Combine(Directory.GetCurrentDirectory(), "Список встреч.txt");
-
+        /// <summary>
+        /// Путь к файлу со списком встреч, формат JSON
+        /// </summary>
         public string path_json = Path.Combine(Directory.GetCurrentDirectory(), "DataBase_Meets.json");
-
+        /// <summary>
+        /// Список встреч
+        /// </summary>
         public List<Meeting> meetingList = new List<Meeting>();
-
-        private static MeetingList instance;
-
-
+        /// <summary>
+        /// 
+        /// </summary>
+        private static MeetingList? instance;
+        /// <summary>
+        /// Конструктор для получения ед. значения
+        /// </summary>
+        /// <returns></returns>
+        public static MeetingList getInstance()
+        {
+            if (instance == null)
+                instance = new MeetingList();
+            return instance;
+        }
+        /// <summary>
+        /// Конструктор класса
+        /// </summary>
         private MeetingList ()
         {
             this.meetingList = new List<Meeting>();
@@ -35,35 +55,23 @@ namespace Directum
             }
 
         }     
-
-        public async Task SerializeJSON(IEnumerable<Meeting> meet, string fileName)
+        /// <summary>
+        /// Запись информации из списка встреч в файл формата JSON
+        /// </summary>
+        /// <param name="meets">Список встреч</param>
+        /// <param name="fileName">Название файла</param>
+        /// <returns></returns>
+        public async Task SerializeJSON(IEnumerable<Meeting> meets, string fileName)
         {
             using (FileStream fs = new FileStream(fileName, FileMode.Open))
             {
-                await JsonSerializer.SerializeAsync<List<Meeting>>(fs, meet.ToList());
+                await JsonSerializer.SerializeAsync<List<Meeting>>(fs, meets.ToList());
             }
         }
 
-        public static MeetingList getInstance()
-        {
-            if (instance == null)
-                instance = new MeetingList();
-            return instance;
-        }
-
-        public void DataInFile()
-        {
-            File.WriteAllText(path_txt, string.Empty);
-
-            List<string> AllLines = new List<string>();
-            for (int i = 0; i < meetingList.Count; i++)
-            {
-
-                string str = ListToString(meetingList[i].Id);
-                AllLines.Add(str);
-            }            
-            File.WriteAllLines(path_txt, AllLines);
-        }
+        /// <summary>
+        /// Добавление информации о новой встрече в список.
+        /// </summary>
         public void AddNewMeet ()
         {
             Console.Clear();
@@ -95,6 +103,7 @@ namespace Directum
 
             if (Intersect(startTime, endTime))
             {
+                Console.WriteLine("Процедура ввода прекращена, информация не сохранена.");
                 return;
             }
 
@@ -113,15 +122,20 @@ namespace Directum
             PrintLine(id);
             return;
         }
-
-
+        /// <summary>
+        /// Установить название встречи
+        /// </summary>
+        /// <returns>Название встречи</returns>
         public string SetName()
         {
             Console.WriteLine("Введите название встречи");
             string? name = Console.ReadLine();
             return name;
         }
-
+        /// <summary>
+        /// Изменить название встречи
+        /// </summary>
+        /// <param name="Id">ИД встречи</param>
         public void RewriteName(int Id)
         {
             string name = SetName();
@@ -130,13 +144,20 @@ namespace Directum
             PrintLine(Id);
             return;
         }
+        /// <summary>
+        /// Установить описание встречи
+        /// </summary>
+        /// <returns>Описание встречи</returns>
         public string SetDescription()
         {
             Console.WriteLine("Введите описание встречи");
             string? descriptrion = Console.ReadLine();
             return descriptrion;
         }
-
+        /// <summary>
+        /// Изменить описание встречи
+        /// </summary>
+        /// <param name="Id">ИД встречи</param>
         public void RewriteDescription(int Id)
         {
             string description = SetDescription();
@@ -145,6 +166,10 @@ namespace Directum
             PrintLine(Id);
             return;
         }
+        /// <summary>
+        /// Установить дату и время начала встречи
+        /// </summary>
+        /// <returns>Дата и время начала встречи</returns>
         public Nullable<DateTime> SetStartDate()
         {
             Nullable<DateTime> dtDate;
@@ -160,6 +185,7 @@ namespace Directum
                 strDate = Console.ReadLine();
                 if (strDate == "exit")
                 {
+                    Console.WriteLine("Процедура ввода прекращена, информация не сохранена.");
                     dtDate = null;
                     break;
                 }
@@ -184,7 +210,10 @@ namespace Directum
             }
             return dtDate;
         }
-
+        /// <summary>
+        /// Изменить дату начала встречи
+        /// </summary>
+        /// <param name="Id">ИД встречи</param>
         public void RewriteStartDate(int Id)
         {
             int index = GetIndex(Id);
@@ -224,6 +253,7 @@ namespace Directum
 
             if (Intersect(new_startTime, new_endTime))
             {
+                Console.WriteLine("Процедура ввода прекращена, информация не сохранена.");
                 Meeting old_Meeting = new Meeting(id, name, description, old_startTime, old_endTime, old_notificationTime, old_notificationFlag);
                 meetingList.Add(old_Meeting);
                 return;
@@ -237,39 +267,11 @@ namespace Directum
             Console.WriteLine($"Дата начала встречи изменена, поэтому изменено время напоминания о встрече {new_notificationTime}");
             return;
         }
-
-        public int GetIndex(int Id)
-        {
-            for (int i = 0; i < meetingList.Count; i++)
-            {
-                if (meetingList[i].Id == Id)
-                {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
-        public bool Intersect (DateTime startTime, DateTime endTime)
-        {
-            for (int i = 0; i < meetingList.Count; i++)
-            {
-                var date_1_start = meetingList[i].StartTime;
-                var date_1_end = meetingList[i].EndTime;
-                var date_2_start = startTime;
-                var date_2_end = endTime;
-
-                bool intersect = date_2_end >= date_1_start && date_2_start <= date_1_end;
-                if (intersect)
-                {
-                    Console.WriteLine($"Невозможно запланировать встречу, её время пересекается с другой встречей:");
-                    PrintLine(meetingList[i].Id);
-                    return true;
-                }
-            }
-            return false;
-        }
-
+        /// <summary>
+        /// Установить дату и время окончания встречи
+        /// </summary>
+        /// <param name="startTime">Дата и время начала встречи</param>
+        /// <returns>Дата и время окончания встречи</returns>
         public Nullable<DateTime> SetEndDate (DateTime startTime)
         {
             Nullable<DateTime> dtDate;
@@ -285,6 +287,7 @@ namespace Directum
                 strDate = Console.ReadLine();
                 if (strDate == "exit")
                 {
+                    Console.WriteLine("Процедура ввода прекращена, информация не сохранена.");
                     dtDate = null;
                     break;
                 }
@@ -309,7 +312,10 @@ namespace Directum
             }
             return dtDate;
         }
-
+        /// <summary>
+        /// Изменить дату и время окончания встречи
+        /// </summary>
+        /// <param name="Id">ИД встречи</param>
         public void RewriteEndDate(int Id)
         {
             int index = GetIndex(Id);
@@ -340,6 +346,7 @@ namespace Directum
 
             if (Intersect(startTime, new_endTime))
             {
+                Console.WriteLine("Процедура ввода прекращена, информация не сохранена.");
                 Meeting old_Meeting = new Meeting(id, name, description, startTime, old_endTime, notificationTime, notificationFlag);
                 meetingList.Add(old_Meeting);
                 return;
@@ -351,7 +358,11 @@ namespace Directum
             Console.WriteLine($"Время окончания встречи изменено на: {new_endTime}");
             return;
         }
-
+        /// <summary>
+        /// Установить дату и время напоминания о встрече
+        /// </summary>
+        /// <param name="startTime">Дата и время начала встречи</param>
+        /// <returns>Дата и время напоминания о встрече</returns>
         public DateTime SetNotificationTime (DateTime startTime)
         {
             DateTime dtDate=startTime;
@@ -365,6 +376,7 @@ namespace Directum
                 strTS = Console.ReadLine();
                 if (strTS == "exit")
                 {
+                    Console.WriteLine("Напоминание о встрече не установлено.");
                     break;
                 }
                 bool IsCorrect = TimeSpan.TryParse(strTS, out interval);
@@ -388,7 +400,10 @@ namespace Directum
             }
             return dtDate;
         }
-
+        /// <summary>
+        /// Изменить дату и время напоминания о встрече
+        /// </summary>
+        /// <param name="Id">ИД встречи</param>
         public void RewriteNotificationTime(int Id)
         {
             int index = GetIndex(Id);
@@ -409,7 +424,32 @@ namespace Directum
             Console.WriteLine($"Установлено время напоминания о встрече: {notificationTime}");
             return;
         }
-
+        /// <summary>
+        /// Удалить встречу из списка
+        /// </summary>
+        /// <param name="id">ИД встречи</param>
+        public void Delete(int id)
+        {
+            string meet = null;
+            for (int i = 0; i < meetingList.Count; i++)
+            {
+                if (id == meetingList[i].Id)
+                {
+                    meet = ListToString(id);
+                    meetingList.RemoveAt(i);
+                    Console.WriteLine($"Удалена встреча {meet}");
+                    return;
+                }
+            }
+            if (meet == null)
+            {
+                Console.WriteLine("Встреч с таким номером не найдено. Попробуйте ещё раз.");
+            }
+            return;
+        }
+        /// <summary>
+        /// Вывод в консоль информации о всех встречах из списка
+        /// </summary>
         public void PrintAll()
         {
             if (!IsEmpty())
@@ -422,14 +462,10 @@ namespace Directum
             else { Console.WriteLine("Встречи не запланированы."); }
 
         }
-
-        public bool IsEmpty ()
-        {
-            bool b = true;
-            if (meetingList.Count > 0) { b = false; }
-            return b;
-        }
-
+        /// <summary>
+        /// Вывод в консоль информации о выбранной встрече.
+        /// </summary>
+        /// <param name="id">ИД встречи</param>
         public void PrintLine ( int id)
         {
             if (! IsEmpty())
@@ -444,7 +480,11 @@ namespace Directum
             else { Console.WriteLine("Встречи не запланированы."); }
 
         }
-
+        /// <summary>
+        /// Приведение к строке информации о встрече.
+        /// </summary>
+        /// <param name="id">ИД встречи</param>
+        /// <returns>Информация о встрече приведенная к типу данных string</returns>
         public string ListToString (int id)
         {
             string outputInfo=null;
@@ -456,36 +496,32 @@ namespace Directum
                 {
                     NotificationTime = "Не установлено.";
                 }
-                outputInfo = $"Номер: {meetingList[index].Id}, " +
-                $"Название: {meetingList[index].Name}," +
-                $"Описание: {meetingList[index].Description}, " +
-                $"Старт: {meetingList[index].StartTime}, " +
-                $"Окончание: {meetingList[index].EndTime}, " +
-                $"Напоминание: {NotificationTime}";
+                outputInfo = "---------------------------------------------------------------------------------------------\n" +
+                            $"Номер: {meetingList[index].Id}\n" +
+                            $"Название: {meetingList[index].Name, -30}\n" +
+                            $"Описание: {meetingList[index].Description, -30}\n" +
+                            $"Старт: {meetingList[index].StartTime,15}| " +
+                            $"Окончание: {meetingList[index].EndTime, 15}| " +
+                            $"Напоминание: {NotificationTime, 15}\n"+
+                            "---------------------------------------------------------------------------------------------\n";
             }
             return outputInfo;
         }
-
-        public void Delete(int id)
+        /// <summary>
+        /// Проверка списка на содержание информации.
+        /// </summary>
+        /// <returns>True or false</returns>
+        public bool IsEmpty()
         {
-            string meet = null;
-            for (int i = 0; i < meetingList.Count; i++)
-            {
-                if ( id == meetingList[i].Id)
-                {
-                    meet = ListToString(id);
-                    meetingList.RemoveAt(i);
-                    Console.WriteLine($"Удалена встреча {meet}");
-                    return;
-                }
-            }
-            if (meet == null)
-            {
-                Console.WriteLine("Встреч с таким номером не найдено. Попробуйте ещё раз.");
-            }
-            return;
+            bool b = true;
+            if (meetingList.Count > 0) { b = false; }
+            return b;
         }
-
+        /// <summary>
+        /// Проверка содержит ли список строку с данным ИД
+        /// </summary>
+        /// <param name="Id">ИД встречи</param>
+        /// <returns>True or false</returns>
         public bool ContainsId(int Id)
         {
             int[] idArray = new int[meetingList.Count];
@@ -496,6 +532,63 @@ namespace Directum
             foreach (int id in idArray)
             {
                 if (id == Id) { return true;}
+            }
+            return false;
+        }
+        /// <summary>
+        /// Сохранение информации в файл
+        /// </summary>
+        public void DataInFile()
+        {
+            File.WriteAllText(path_txt, string.Empty);
+
+            List<string> AllLines = new List<string>();
+            for (int i = 0; i < meetingList.Count; i++)
+            {
+
+                string str = ListToString(meetingList[i].Id);
+                AllLines.Add(str);
+            }
+            File.WriteAllLines(path_txt, AllLines);
+        }
+        /// <summary>
+        /// Получение индекса строки по ИД встречи
+        /// </summary>
+        /// <param name="Id">ИД Встречи</param>
+        /// <returns>Индекс строки</returns>
+        public int GetIndex(int Id)
+        {
+            for (int i = 0; i < meetingList.Count; i++)
+            {
+                if (meetingList[i].Id == Id)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+        /// <summary>
+        /// Проверка пересечения дат создаваемой встречи с имеющимися в списке встреч
+        /// </summary>
+        /// <param name="startTime">Дата и время начала встречи</param>
+        /// <param name="endTime">Дата и время окончания встречи</param>
+        /// <returns>True or false</returns>
+        public bool Intersect(DateTime startTime, DateTime endTime)
+        {
+            for (int i = 0; i < meetingList.Count; i++)
+            {
+                var date_1_start = meetingList[i].StartTime;
+                var date_1_end = meetingList[i].EndTime;
+                var date_2_start = startTime;
+                var date_2_end = endTime;
+
+                bool intersect = date_2_end >= date_1_start && date_2_start <= date_1_end;
+                if (intersect)
+                {
+                    Console.WriteLine($"Невозможно запланировать встречу, её время пересекается с другой встречей:");
+                    PrintLine(meetingList[i].Id);
+                    return true;
+                }
             }
             return false;
         }

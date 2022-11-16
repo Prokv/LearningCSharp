@@ -22,7 +22,7 @@ namespace Final_Project
         /// <summary>
         /// Конструктор управления файлами в хранилище
         /// </summary>
-        internal FileHandler()
+        public FileHandler()
         {         
             if (!dirInfo.Exists)
             {
@@ -33,8 +33,6 @@ namespace Final_Project
             {
                 Console.WriteLine("Файл \"{0}\" найден.", pathDirectory);
             }
-
-            BookList booksList = new BookList();
             Update();
         }
 
@@ -43,6 +41,7 @@ namespace Final_Project
         /// </summary>
         public static void Update()
         {
+            BookList BookList = BookList.getInstance();
             BookList.ClearList();
             FileInfo[] files = dirInfo.GetFiles("*.pdf");
             Console.WriteLine("Книги в каталоге:");

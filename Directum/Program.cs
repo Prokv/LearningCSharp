@@ -15,6 +15,11 @@ namespace Directum
 
             Menu menu = new Menu();
         }
+
+        /// <summary>
+        /// Напоминание о встрече
+        /// </summary>
+        /// <param name="obj">Объект класса object</param>
         static void Reminder(object obj)
         {
             MeetingList MeetingList = MeetingList.getInstance();

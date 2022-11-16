@@ -8,12 +8,12 @@ using Newtonsoft.Json;
 
 namespace Final_Project
 {
-    public class BookList
+    internal class BookList
     {
         /// <summary>
         /// Список книг (каталог книг)
         /// </summary>
-        public static List<BookInfo> bookList = new List<BookInfo>();
+        public List<BookInfo> bookList = new List<BookInfo>();
 
         /// <summary>
         /// Конструктор класса
@@ -31,9 +31,9 @@ namespace Final_Project
             return instance;
 
         }
-        public BookList ()
+        private BookList ()
         {
-         bookList=new List<BookInfo>();
+         this.bookList=new List<BookInfo>();
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Final_Project
         /// </summary>
         /// <param name="FileName">Название файла</param>
         /// <param name="PathFile">Полный путь файла</param>
-        public static void AddBookMetaInfo(string FileName, string PathFile)
+        public void AddBookMetaInfo(string FileName, string PathFile)
         {
             Aspose.Pdf.Facades.PdfFileInfo fInfo = new Aspose.Pdf.Facades.PdfFileInfo(PathFile);
 
@@ -81,7 +81,7 @@ namespace Final_Project
         /// <param name="Id">Номер книги в каталоге</param>
         /// <param name="Author">Имя автора</param>
         /// <returns></returns>
-        public static List<BookInfo> SetAuthor (int Id, string Author)
+        public List<BookInfo> SetAuthor (int Id, string Author)
         {
             List<BookInfo> outputInfo = new List<BookInfo>();
             for (int i = 0; i < bookList.Count; i++)
@@ -103,7 +103,7 @@ namespace Final_Project
         /// <param name="Id">Номер книги в каталоге</param>
         /// <param name="Title">Название книги</param>
         /// <returns></returns>
-        public static List<BookInfo> SetTitle(int Id, string Title)
+        public List<BookInfo> SetTitle(int Id, string Title)
         {
             List<BookInfo> outputInfo = new List<BookInfo>();
             for (int i = 0; i < bookList.Count; i++)
@@ -125,7 +125,7 @@ namespace Final_Project
         /// <param name="Id">Номер книги в каталоге</param>
         /// <param name="Keywords">Тема</param>
         /// <returns></returns>
-        public static List<BookInfo> SetKeywords(int Id, string Keywords)
+        public List<BookInfo> SetKeywords(int Id, string Keywords)
         {
             List<BookInfo> outputInfo = new List<BookInfo>();
             for (int i = 0; i < bookList.Count; i++)
@@ -147,7 +147,7 @@ namespace Final_Project
         /// <param name="Id">Номер книги в каталоге</param>
         /// <param name="Genre">Жанр</param>
         /// <returns></returns>
-        public static List<BookInfo> SetGenre(int Id, string Genre)
+        public List<BookInfo> SetGenre(int Id, string Genre)
         {
             List<BookInfo> outputInfo = new List<BookInfo>();
             for (int i = 0; i < bookList.Count; i++)
@@ -166,7 +166,7 @@ namespace Final_Project
         /// <summary>
         /// Очистить список
         /// </summary>
-        public static void ClearList()
+        public void ClearList()
         {
             bookList.Clear();
         }
@@ -176,7 +176,7 @@ namespace Final_Project
         /// </summary>
         /// <param name="Id">Номер книги в каталоге</param>
         /// <returns></returns>
-        public static string[] GetBookInfo(int Id)
+        public string[] GetBookInfo(int Id)
         {
             string[] outputInfo = new string[6];
             outputInfo[0] ="Значение не найдено";
@@ -202,7 +202,7 @@ namespace Final_Project
         /// </summary>
         /// <param name="Id">Номер книги в каталоге</param>
         /// <returns></returns>
-        public static string GetBookInfoToString (int Id)
+        public string GetBookInfoToString (int Id)
         {
             string outputInfo= "Значение не найдено";
 
@@ -227,7 +227,7 @@ namespace Final_Project
         /// <param name="FilterBy">Название поля по которому выполняется фильтрация</param>
         /// <param name="Value">Значение по которому выполняется фильтрация</param>
         /// <returns></returns>
-        public static List<BookInfo> GetFilterList(string FilterBy, string Value)
+        public List<BookInfo> GetFilterList(string FilterBy, string Value)
         {
             List <BookInfo> outputInfo = new List<BookInfo>();
             string field = FilterBy;
@@ -288,7 +288,7 @@ namespace Final_Project
         /// </summary>
         /// <param name="OrderBy">Поле и направление сортировки списка</param>
         /// <returns></returns>
-        public static List<BookInfo> GetSortList(string OrderBy)
+        public List<BookInfo> GetSortList(string OrderBy)
         {
             List<BookInfo> outputInfo = new List<BookInfo>();
             string ordBy = OrderBy;
